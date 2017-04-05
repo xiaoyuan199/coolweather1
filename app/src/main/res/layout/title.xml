@@ -4,13 +4,13 @@
     android:layout_height="?attr/actionBarSize"
     >
     <Button
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:id="@+id/back_button1"
-        android:layout_margin="10dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/nav_button"
+        android:layout_marginLeft="10dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/ic_back"
+        android:background="@drawable/ic_home"
         />
     <TextView
         android:layout_width="wrap_content"

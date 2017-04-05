@@ -96,17 +96,6 @@ public class ChooseAreaFragment extends Fragment  {
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            case 1:
-                if(resultCode==RESULT_OK){
-                    queryCounties();
-                }
-                break;
-            default:
-        }
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -121,11 +110,20 @@ public class ChooseAreaFragment extends Fragment  {
                     selectedCity=cityList.get(position);//知道选中的是哪个市了
                     queryCounties();//找到对应的县并将数据显示在界面
                 }else if(currentLevel==LEVEL_COUNTY){
+
                     String weatherId=countyList.get(position).getWeatherId();
-                    Intent intent=new Intent(getActivity(),WeatherActivity.class);
-                    intent.putExtra("weather_id",weatherId);
-                    startActivityForResult(intent,REQUEST_CODE);
-                    //getActivity().finish();//释放当前活动
+
+                    if(getActivity()instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        getActivity().finish();//释放当前活动
+                    }else if (getActivity()instanceof WeatherActivity){
+                        WeatherActivity activity= (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefreshLayout.setRefreshing(true);
+                        activity.requestWeather(weatherId);
+                    }
                 }
             }
 

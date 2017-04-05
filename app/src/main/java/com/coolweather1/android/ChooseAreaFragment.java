@@ -1,10 +1,13 @@
 package com.coolweather1.android;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,13 +35,14 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static android.app.Activity.RESULT_OK;
+
 
 /**
  * Created by Administrator on 2017/4/3 0003.
  */
 
-public class ChooseAreaFragment extends Fragment {
+public class ChooseAreaFragment extends Fragment  {
     public static final int LEVEL_PROVINCE=0;
     public  static final int LEVEL_CITY=1;
     public  static  final int LEVEL_COUNTY=2;
@@ -49,6 +53,7 @@ public class ChooseAreaFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private List<String> dataList=new ArrayList<>();
+    public static final int REQUEST_CODE=1;
     /**
      * 省列表
      */
@@ -78,7 +83,7 @@ public class ChooseAreaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.choose_area,container,false);
-        titleText= (TextView) view.findViewById(R.id.title_text);
+        titleText= (TextView) view.findViewById(R.id.title_text1);
         listView= (ListView) view.findViewById(R.id.list_view);
         backButton= (Button) view.findViewById(R.id.back_button);
         //////////////R.layout.simple_list_item_1 表示该布局只显示一行文字
@@ -89,6 +94,18 @@ public class ChooseAreaFragment extends Fragment {
         listView.setAdapter(adapter);
         return  view;
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case 1:
+                if(resultCode==RESULT_OK){
+                    queryCounties();
+                }
+                break;
+            default:
+        }
     }
 
     @Override
@@ -103,11 +120,19 @@ public class ChooseAreaFragment extends Fragment {
                 }else if (currentLevel==LEVEL_CITY){
                     selectedCity=cityList.get(position);//知道选中的是哪个市了
                     queryCounties();//找到对应的县并将数据显示在界面
+                }else if(currentLevel==LEVEL_COUNTY){
+                    String weatherId=countyList.get(position).getWeatherId();
+                    Intent intent=new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivityForResult(intent,REQUEST_CODE);
+                    //getActivity().finish();//释放当前活动
                 }
             }
 
 
         });
+
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

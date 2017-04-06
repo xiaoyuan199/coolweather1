@@ -13,8 +13,8 @@
         android:background="@drawable/ic_home"
         />
     <Button
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:id="@+id/setting"
         android:layout_toRightOf="@+id/nav_button"
        android:layout_marginLeft="10dp"

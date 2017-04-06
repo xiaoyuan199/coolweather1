@@ -1,16 +1,19 @@
 package com.coolweather1.android;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.coolweather1.android.gson.Forecast;
 import com.coolweather1.android.gson.Weather;
+import com.coolweather1.android.service.AutoUpdateService;
 import com.coolweather1.android.util.HttpUtil;
 import com.coolweather1.android.util.Utility;
 
@@ -73,6 +77,9 @@ public class WeatherActivity extends AppCompatActivity {
 
     private Button nav_Button;
 
+    private  Button setting_Button;
+    Intent intent1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +112,7 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         drawerLayout= (DrawerLayout) findViewById(R.id.drawer_layout);
         nav_Button= (Button) findViewById(R.id.nav_button);
+        setting_Button= (Button) findViewById(R.id.setting);
 
 
 
@@ -148,6 +156,34 @@ public class WeatherActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * 设置按钮
+         */
+        setting_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialog=new AlertDialog.Builder(WeatherActivity.this);
+                dialog.setTitle("设置");
+
+                dialog.setMessage("是否开启后台自动更新天气！");
+                dialog.setCancelable(false);
+
+                dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                     startService(intent1);
+                    }
+                });
+
+                dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        stopService(intent1);
+                    }
+                });
+                dialog.show();
+            }
+        });
 
     }
 
@@ -231,6 +267,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     }
 
+
     /**
      * 处理并展示Weather实体类中的数据
      * @param weather
@@ -272,11 +309,11 @@ public class WeatherActivity extends AppCompatActivity {
         String comfort="舒适度："+weather.suggestion.comfort.info;
         String carWash="洗车指数："+weather.suggestion.carWash.info;
         String sport="运动建议："+weather.suggestion.sport.info;
-        comWashText.setText(comfort);
+        comfortText.setText(comfort);
         comWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
-
+         intent1=new Intent(this, AutoUpdateService.class);
     }
 
 }

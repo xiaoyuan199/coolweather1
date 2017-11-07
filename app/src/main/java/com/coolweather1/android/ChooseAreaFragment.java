@@ -1,13 +1,11 @@
 package com.coolweather1.android;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +32,6 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-
-import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -100,9 +96,13 @@ public class ChooseAreaFragment extends Fragment  {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
                 if(currentLevel==LEVEL_PROVINCE){
                     selectedProvince=provincesList.get(position);//知道选中的是哪个省了
                     queryCities();//找到对应的市并将数据显示在界面
@@ -160,6 +160,7 @@ public class ChooseAreaFragment extends Fragment  {
             listView.setSelection(0);
             currentLevel=LEVEL_PROVINCE;
         }else{
+            Log.d("111","here===");
             String address="http://guolin.tech/api/china";
             queryFromSever(address,"Province");
         }
